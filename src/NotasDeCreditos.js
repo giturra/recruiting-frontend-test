@@ -63,26 +63,28 @@ const NotasDeCredito = ({ facturaId, resetAsignacion }) => {
       <table className="min-w-full bg-white border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
-          <th></th>
             <th className="px-4 py-2 text-left">Nota de Crédito</th>
             <th className="px-4 py-2 text-right">Monto</th>
           </tr>
         </thead>
         <tbody>
           {notasDeCredito.map((nota) => (
-            <tr key={nota.id} className="border-b">
-              <td className="px-4 py-2">
-                  <input
-                    type="radio"
-                    name="factura"
-                    value={nota.id}
-                    onChange={() => setSelectedNota(nota)}
-                    className="mr-2"
-                  />
-              </td>
-              <td className="px-4 py-2">{nota.id} ({nota.organization_id})</td>
-              <td className="px-4 py-2 text-right"><strong>{nota.amount} {nota.currency}</strong> (${nota.usdAmount} USD)</td>
-            </tr>
+                      <tr key={nota.id} className={`border-b ${selectedNota && selectedNota.id === nota.id ? 'bg-blue-200' : ''}`}>
+                        <td className="px-4 py-2">
+                            <label className="flex items-center">
+                                <input
+                                type="radio"
+                                name="nota"
+                                value={nota.id}
+                                onChange={() => setSelectedNota(nota)}
+                                className="mr-2"
+                                />
+                                <strong>{nota.id}</strong> ({nota.organization_id})
+                            </label>
+
+                        </td>
+                        <td className="px-4 py-2 text-right"><strong>{nota.amount} {nota.currency}</strong> (${nota.usdAmount} USD)</td>
+                    </tr>
           ))}
         </tbody>
       </table>

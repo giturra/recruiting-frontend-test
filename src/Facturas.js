@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const Facturas = ({ setSelectedFactura }) => {
   const [facturas, setFacturas] = useState([]);
+  const [selectedFacturaId, setSelectedFacturaId] = useState(null);
 
   useEffect(() => {
     const fetchFacturas = async () => {
@@ -37,6 +38,11 @@ const Facturas = ({ setSelectedFactura }) => {
     fetchFacturas();
   }, []);
 
+  const handleSelectFactura = (factura) => {
+    setSelectedFactura(factura);
+    setSelectedFacturaId(factura.id);
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Selecciona una factura</h2>
@@ -50,17 +56,17 @@ const Facturas = ({ setSelectedFactura }) => {
         </thead>
         <tbody>
           {facturas.map((factura) => (
-            <tr key={factura.id} className="border-b">
+            <tr key={factura.id} className={`border-b ${selectedFacturaId === factura.id ? 'bg-blue-100' : ''}`}>
               <td className="px-4 py-2">
                 <label className="flex items-center">
                   <input
                     type="radio"
                     name="factura"
                     value={factura.id}
-                    onChange={() => setSelectedFactura(factura)}
+                    onChange={() => handleSelectFactura(factura)}
                     className="mr-2"
                   />
-                  {factura.id} ({factura.organization_id})
+                  <strong>{factura.id}</strong>  ({factura.organization_id})
                 </label>
               </td>
               <td className="px-4 py-2 text-right">
