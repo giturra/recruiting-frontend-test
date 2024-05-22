@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import Facturas from './Facturas';
+import NotasDeCredito from './NotasDeCreditos';
 
-function App() {
+const App = () => {
+  const [selectedFactura, setSelectedFactura] = useState(null);
+
+  const resetAsignacion = () => {
+    setSelectedFactura(null);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container mx-auto p-4">
+      <Facturas setSelectedFactura={setSelectedFactura} />
+      {selectedFactura && (
+        <NotasDeCredito
+          facturaId={selectedFactura.id}
+          resetAsignacion={resetAsignacion}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default App;
