@@ -1,5 +1,14 @@
 import React from 'react';
 
+/**
+ * Componente ModalExito para mostrar un modal de éxito.
+ *
+ * @component
+ * @param {Object} props - Las propiedades del componente.
+ * @param {boolean} props.show - Indica si el modal debe mostrarse.
+ * @param {function} props.handleClose - Función para cerrar el modal.
+ * @returns {React.ReactElement|null} El componente del modal o null si no se debe mostrar.
+ */
 const ModalExito = ({ show, handleClose }) => {
   if (!show) {
     return null;
