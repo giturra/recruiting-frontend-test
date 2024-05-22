@@ -21,6 +21,12 @@ const Facturas = ({ setSelectedFactura }) => {
    */
   const [selectedFacturaId, setSelectedFacturaId] = useState(null);
 
+  /**
+   * Estado para almacenar el valor de la factura seleccionada.
+   * @type {Number|null}
+   */
+    const [selectedFacturaValor, setSelectedFacturaValor] = useState(0);
+
   useEffect(() => {
     /**
      * Función para obtener las facturas pendientes desde la API.
@@ -65,6 +71,7 @@ const Facturas = ({ setSelectedFactura }) => {
   const handleSelectFactura = (factura) => {
     setSelectedFactura(factura);
     setSelectedFacturaId(factura.id);
+    setSelectedFacturaValor(factura.amount);
   };
 
   return (

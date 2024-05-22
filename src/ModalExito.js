@@ -9,7 +9,7 @@ import React from 'react';
  * @param {function} props.handleClose - Función para cerrar el modal.
  * @returns {React.ReactElement|null} El componente del modal o null si no se debe mostrar.
  */
-const ModalExito = ({ show, handleClose }) => {
+const ModalExito = ({ show, handleClose, nota, facturaId }) => {
   if (!show) {
     return null;
   }
@@ -21,6 +21,14 @@ const ModalExito = ({ show, handleClose }) => {
           <span className="text-green-500 text-4xl">✔️</span>
         </div>
         <h2 className="text-xl font-bold mb-4 text-center">Nota de crédito asignada correctamente</h2>
+        {nota && (
+          <div className="text-center mb-4">
+            <p>ID del crédito: {nota.id}</p>
+            <p>Monto del crédito: <strong>{nota.amount} {nota.currency}</strong> (${nota.usdAmount} USD)</p>
+            <p>Monto de la factura: <strong>{nota.montoFactura}</strong> CLP (${nota.montofacturaUSD} USD)</p>
+            <p>Nuevo monto de la factura: <strong>{nota.facturaValue} CLP</strong> (${nota.facturaValueUSD} USD)</p>
+          </div>
+        )}
         <div className="flex items-center justify-center">
           <button
             onClick={handleClose}

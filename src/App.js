@@ -15,6 +15,7 @@ const App = () => {
       {selectedFactura && (
         <NotasDeCredito
           facturaId={selectedFactura.id}
+          facturaValor={selectedFactura.amount}
           resetAsignacion={resetAsignacion}
         />
       )}

@@ -10,7 +10,7 @@ import ModalExito from './ModalExito';
  * @param {function} props.resetAsignacion - Función para resetear la asignación de la nota de crédito.
  * @returns {React.ReactElement} El componente de notas de crédito.
  */
-const NotasDeCredito = ({ facturaId, resetAsignacion }) => {
+const NotasDeCredito = ({ facturaId, facturaValor, resetAsignacion }) => {
 
   /**
    * Estado para almacenar la lista de notas de crédito.
@@ -46,17 +46,20 @@ const NotasDeCredito = ({ facturaId, resetAsignacion }) => {
         const data = await response.json();
         const filteredNotas = data.filter(invoice => invoice.type === 'credit_note').filter(invoice => invoice.reference === facturaId);
 
-        filteredNotas.forEach(factura => {
-          if (factura.type === 'received') {
-            factura.type = "Recibida";
+        filteredNotas.forEach(nota => {
+          if (nota.currency === "CLP") {
+            nota.usdAmount = nota.amount * 0.0013;
+          } else if (nota.currency === "USD") {
+            nota.currency = "CLP";
+            nota.usdAmount = nota.amount;
+            nota.amount = Math.ceil(nota.usdAmount / 0.0013);
           }
-          if (factura.currency === "CLP") {
-            factura.usdAmount = factura.amount * 0.0013;
-          } else if (factura.currency === "USD") {
-            factura.currency = "CLP";
-            factura.usdAmount = factura.amount;
-            factura.amount = Math.ceil(factura.usdAmount / 0.0013);
-          }
+          
+          nota.montoFactura = facturaValor
+          nota.montofacturaUSD = Math.ceil(nota.montoFactura * 0.0013)
+          nota.facturaValue = nota.montoFactura - nota.amount
+          nota.facturaValueUSD = Math.ceil(nota.facturaValue * 0.0013)
+
         });
 
         setNotasDeCredito(filteredNotas);
@@ -68,7 +71,7 @@ const NotasDeCredito = ({ facturaId, resetAsignacion }) => {
     if (facturaId) {
       fetchNotasDeCredito();
     }
-  }, [facturaId]);
+  }, [facturaId, facturaValor]);
 
   /**
    * Maneja la asignación de la nota de crédito seleccionada.
@@ -91,12 +94,13 @@ const NotasDeCredito = ({ facturaId, resetAsignacion }) => {
 
   return (
     <div className="mt-4">
-      <h2 className="text-2xl font-bold mb-4 center">Selecciona una nota de crédito</h2>
+      <h2 className="text-2xl font-bold mb-4 center">Selecciona una nota de crédito {facturaValor}</h2>
       <table className="min-w-full bg-white border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
             <th className="px-4 py-2 text-left">Nota de Crédito</th>
-            <th className="px-4 py-2 text-right">Monto</th>
+            <th className="px-4 py-2 text-left">Monto</th>
+            <th className="px-4 py-2 text-left">Factura</th>
           </tr>
         </thead>
         <tbody>
@@ -114,8 +118,11 @@ const NotasDeCredito = ({ facturaId, resetAsignacion }) => {
                   <strong>{nota.id}</strong> ({nota.organization_id})
                 </label>
               </td>
-              <td className="px-4 py-2 text-right">
+              <td className="px-4 py-2 text-left">
                 <strong>{nota.amount} {nota.currency}</strong> (${nota.usdAmount} USD)
+              </td>
+              <td className="px-4 py-2 text-left">
+                {facturaId}
               </td>
             </tr>
           ))}
@@ -133,7 +140,7 @@ const NotasDeCredito = ({ facturaId, resetAsignacion }) => {
           </div>
         </div>
       )}
-      <ModalExito show={showModal} handleClose={handleCloseModal} />
+      <ModalExito show={showModal} handleClose={handleCloseModal} nota={selectedNota} facturaId={facturaId}/>
     </div>
   );
 };
