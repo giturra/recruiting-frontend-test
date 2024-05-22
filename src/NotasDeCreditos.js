@@ -17,6 +17,23 @@ const NotasDeCredito = ({ facturaId, resetAsignacion }) => {
         const data = await response.json();
         const filteredNotas = data.filter(invoice => invoice.type === 'credit_note').filter(invoice => invoice.reference === facturaId);
 
+        filteredNotas.forEach(factura => {
+          
+            if (factura.type === 'received') {
+              factura.type = "Recibida"; // Cambiar la edad de Ana a 26
+            }
+  
+            if (factura.currency === "CLP") {
+                factura.usdAmount = factura.amount * 0.0013;
+            }
+            else if (factura.currency === "USD") {
+              factura.currency = "CLP";
+              factura.usdAmount  = factura.amount;
+              factura.amount = Math.ceil(factura.usdAmount / 0.0013)
+     
+            } 
+        });
+
         setNotasDeCredito(filteredNotas);
       } catch (error) {
         console.error('Error al obtener las notas de crédito:', error);
@@ -64,19 +81,21 @@ const NotasDeCredito = ({ facturaId, resetAsignacion }) => {
                   />
               </td>
               <td className="px-4 py-2">{nota.id} ({nota.organization_id})</td>
-              <td className="px-4 py-2 text-right">{nota.amount} {nota.currency} (${nota.usdAmount} USD)</td>
+              <td className="px-4 py-2 text-right"><strong>{nota.amount} {nota.currency}</strong> (${nota.usdAmount} USD)</td>
             </tr>
           ))}
         </tbody>
       </table>
       {selectedNota && (
-        <div className="mt-4">
+        <div className="mt-8">
+        <div className="flex items-center justify-center">
           <button
             onClick={handleAsignar}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-purple-500 text-white px-4 py-2 rounded"
           >
             Asignar
           </button>
+        </div>
         </div>
       )}
       <ModalExito show={showModal} handleClose={handleCloseModal} />

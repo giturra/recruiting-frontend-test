@@ -11,7 +11,24 @@ const Facturas = ({ setSelectedFactura }) => {
           throw new Error('Error al obtener las facturas');
         }
         const data = await response.json();
-        setFacturas(data.filter(factura => factura.type === 'received'));
+        const filterData = data.filter(factura => factura.type === 'received')
+        filterData.forEach(factura => {
+          
+          if (factura.type === 'received') {
+            factura.type = "Recibida"; // Cambiar la edad de Ana a 26
+          }
+
+          if (factura.currency === "CLP") {
+              factura.usdAmount = factura.amount * 0.0013;
+          }
+          else if (factura.currency === "USD") {
+            factura.currency = "CLP";
+            factura.usdAmount  = factura.amount;
+            factura.amount = Math.ceil(factura.usdAmount / 0.0013)
+   
+          } 
+      });
+        setFacturas(filterData);
       } catch (error) {
         console.error('Error al obtener las facturas:', error);
       }
@@ -22,7 +39,7 @@ const Facturas = ({ setSelectedFactura }) => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Selecciona una factura</h2>
+      <h2 className="text-2xl font-bold mb-6">Selecciona una factura</h2>
       <table className="min-w-full bg-white border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
@@ -47,7 +64,7 @@ const Facturas = ({ setSelectedFactura }) => {
                 </label>
               </td>
               <td className="px-4 py-2 text-right">
-                {factura.amount} {factura.currency} (${factura.usdAmount} USD)
+                <strong>{factura.amount} {factura.currency}</strong> (${factura.usdAmount} USD)
               </td>
               <td className="px-4 py-2">{factura.type}</td>
             </tr>
